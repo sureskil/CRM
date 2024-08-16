@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxxx.crm.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.xxxx.crm.po.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="user_pwd" jdbcType="VARCHAR" property="userPwd"/>
+        <result column="true_name" jdbcType="VARCHAR" property="trueName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="is_valid" jdbcType="INTEGER" property="isValid"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , user_name, user_pwd, true_name, email, phone, is_valid, create_date, update_date
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from t_user
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xxxx.crm.po.User" useGeneratedKeys="true">
+        insert into t_user (user_name, user_pwd, true_name,
+                            email, phone, is_valid,
+                            create_date, update_date)
+        values (#{userName,jdbcType=VARCHAR}, #{userPwd,jdbcType=VARCHAR}, #{trueName,jdbcType=VARCHAR},
+                #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{isValid,jdbcType=INTEGER},
+                #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xxxx.crm.po.User"
+            useGeneratedKeys="true">
+        insert into t_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="userPwd != null">
+                user_pwd,
+            </if>
+            <if test="trueName != null">
+                true_name,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="isValid != null">
+                is_valid,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userPwd != null">
+                #{userPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="trueName != null">
+                #{trueName,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="isValid != null">
+                #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xxxx.crm.po.User">
+        update t_user
+        <set>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userPwd != null">
+                user_pwd = #{userPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="trueName != null">
+                true_name = #{trueName,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xxxx.crm.po.User">
+        update t_user
+        set user_name   = #{userName,jdbcType=VARCHAR},
+            user_pwd    = #{userPwd,jdbcType=VARCHAR},
+            true_name   = #{trueName,jdbcType=VARCHAR},
+            email       = #{email,jdbcType=VARCHAR},
+            phone       = #{phone,jdbcType=VARCHAR},
+            is_valid    = #{isValid,jdbcType=INTEGER},
+            create_date = #{createDate,jdbcType=TIMESTAMP},
+            update_date = #{updateDate,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!-- sql中的参数名要与Dao方法中的参数名一致 -->
+    <!-- 而Dao中的参数名，一般与实体类的属性名一致 -->
+    <!-- 这里相当于必须要查询所有的对象参数，否则如果只写一些字段的话，没有写的字段会以null的形式返回，除非这个返回参数的类型不是User，是一个自定义的resultMap -->
+    <!-- 但是我们一般不这么写，一般会在Service层的返回对象中，重新编写一个对象，存放需要的参数 -->
+    <select id="queryUserByUserName" parameterType="String" resultType="com.xxxx.crm.po.User">
+        select <include refid="Base_Column_List"/> from t_user where is_valid = 1 and user_name = #{userName}
+    </select>
+
+    <!-- 多条加按查询User对象 -->
+    <select id="queryUserList" parameterType="com.xxxx.crm.query.UserQuery" resultType="com.xxxx.crm.po.User">
+        select <include refid="Base_Column_List" /> from t_user
+
+        <where>
+            is_valid = 1
+            <if test="userName != null and userName != '' ">
+                and user_name = #{userName}
+            </if>
+            <if test="email != null and email !='' ">
+                and email = #{email}
+            </if>
+            <if test="phone != null and phone != '' ">
+                and phone = #{phone}
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量删除功能 -->
+    <update id="deleteBatch">
+        update t_user set is_valid = 0, update_date = now() where id in
+
+            <foreach collection="array" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+    </update>
+
+    <!-- 删除"用户-角色中间表"中对应用户id的数据 -->
+    <delete id="deleteBatchUserRole">
+        delete from t_user_role where user_id = #{userId}
+    </delete>
+
+    <!-- 查询"用户-角色中间表"中对应用户id的数据条数 -->
+    <select id="selectUserRole" resultType="java.lang.Integer">
+        select count(1) from t_user_role where user_id = #{userId}
+    </select>
+
+    <!-- 添加"用户-角色中间表"中对应用户id的数据条数 -->
+    <insert id="insertUserRole">
+        insert into t_user_role (user_id, role_id, create_date,
+                                 update_date)
+        values (#{userId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP},
+                #{updateDate,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!-- 通过名字获得User对象的数量 -->
+    <select id="selectByUserName" resultType="java.lang.Integer">
+        select count(1) from t_user where is_valid = 1 and user_name = #{userName}
+    </select>
+
+    <!-- 通过用户id查询对应的角色的权限码集合 -->
+    <select id="selectAclValueByUserId" resultType="java.lang.String">
+        SELECT p.`acl_value`
+
+        FROM t_user_role u
+
+        LEFT JOIN t_permission p
+
+            ON u.`role_id` = p.`role_id`
+
+        WHERE u.`user_id` = #{userId}
+    </select>
+
+</mapper>

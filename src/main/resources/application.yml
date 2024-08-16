@@ -1,0 +1,43 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /crm
+
+spring:
+  datasource:
+    type: com.mchange.v2.c3p0.ComboPooledDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/crm?userUnicode=true&characterEncoding=utf8&userSSL=true
+    username: root
+    password: 123456
+
+  freemarker:
+    suffix: .ftl
+    content-type: text/html
+    charset: utf-8
+    template-loader-path: classpath:/views/
+
+  # 在maven插件中进行配置后，这里的配置可以不需要；也可以配置这里，不再maven插件中配置
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java; src/main/resources
+
+mybatis:
+  mapper-locations: classpath:/mappers/*.xml
+  type-aliases-package: com.xxxx.crm.po; com.xxxx.crm.query; com.xxxx.crm.dto
+  configuration:
+    # 开启驼峰功能，使得数据库中的字段样式（user_name）可以和实体类中的属性字段样式（userName）一一对应
+    map-underscore-to-camel-case: true
+
+# 设置日志打印级别，因为我们要看具体的sql请求以及返回的内容是什么
+logging:
+  level:
+    com:
+      xxxx:
+        crm:
+          dao: debug
+
+# pagehelper分页配置
+pagehelper:
+  helper-dialect: mysql
